@@ -1,0 +1,4 @@
+# Variant: YOLOv11 medium. Inherits base.yaml.
+# Reference baseline achieved mAP50 ~= 0.75 at ~143 epochs with these HPs.
+train:
+  batch: 16

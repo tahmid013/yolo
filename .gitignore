@@ -1,0 +1,31 @@
+# Reference work from the previous team member — kept locally, not pushed.
+# Contains large model .zip files that exceed GitHub's 100 MB limit.
+report_generation/
+
+# Build artifacts
+data_prep/build/
+runs/
+analysis/reports/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Model weights (keep under runs/ on Drive, not in git)
+*.pt
+*.pth
+*.onnx
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/

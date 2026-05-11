@@ -1,0 +1,4 @@
+# Variant: YOLOv11 large. Inherits base.yaml.
+# Reduced batch for T4 (16 GB) — bump to 16 on A100/L4 if available.
+train:
+  batch: 8

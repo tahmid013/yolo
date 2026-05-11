@@ -1,0 +1,7 @@
+# Local-only requirements for data_prep/ and analysis/.
+# No torch / ultralytics — heavy training/eval runs on Colab.
+pillow>=10.0
+pyyaml>=6.0
+pandas>=2.0
+matplotlib>=3.7
+numpy>=1.24

@@ -1,0 +1,7 @@
+# 3-epoch sanity run; overlays on top of base.yaml in train.run().
+train:
+  epochs: 3
+  imgsz: 320
+  batch: 8
+  patience: 0
+  close_mosaic: 0

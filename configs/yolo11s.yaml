@@ -1,0 +1,3 @@
+# Variant: YOLOv11 small. Inherits base.yaml.
+train:
+  batch: 16
