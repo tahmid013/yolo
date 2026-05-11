@@ -81,25 +81,41 @@ def _build_payload(metrics, data_yaml: Path, split: str) -> dict:
     per_class: list[dict] = []
     if box is not None:
         try:
-            maps = list(getattr(box, "maps", []) or [])  # mAP50-95 per class index
-            ap_class_index = list(getattr(box, "ap_class_index", []) or [])
-            ap50 = getattr(box, "ap50", None)
-            p = getattr(box, "p", None)
-            r = getattr(box, "r", None)
+            # Do NOT use `arr or []` — on a numpy array that triggers
+            # "truth value of an array with more than one element is ambiguous".
+            maps = _as_list(getattr(box, "maps", None))           # per-class mAP50-95, len=nc
+            ap_class_index = _as_list(getattr(box, "ap_class_index", None))
+            ap50 = _as_list(getattr(box, "ap50", None))           # per detected class
+            p = _as_list(getattr(box, "p", None))                 # per detected class
+            r = _as_list(getattr(box, "r", None))                 # per detected class
             for i, cls_idx in enumerate(ap_class_index):
                 cls_idx = int(cls_idx)
                 per_class.append({
                     "id": cls_idx,
                     "name": names[cls_idx] if 0 <= cls_idx < len(names) else str(cls_idx),
-                    "ap50": _safe_float(ap50[i]) if ap50 is not None else None,
-                    "ap50_95": _safe_float(maps[cls_idx]) if cls_idx < len(maps) else None,
-                    "precision": _safe_float(p[i]) if p is not None else None,
-                    "recall": _safe_float(r[i]) if r is not None else None,
+                    "ap50":      _safe_float(ap50[i]) if i < len(ap50) else None,
+                    "ap50_95":   _safe_float(maps[cls_idx]) if cls_idx < len(maps) else None,
+                    "precision": _safe_float(p[i]) if i < len(p) else None,
+                    "recall":    _safe_float(r[i]) if i < len(r) else None,
                 })
         except Exception as e:
             print(f"[evaluate] WARN: could not build per-class metrics: {e}")
 
     return {"split": split, "overall": overall, "per_class": per_class}
+
+
+def _as_list(v) -> list:
+    """Convert a numpy array / sequence / None into a plain Python list.
+
+    Avoids `arr or []` patterns that fail on numpy arrays with the
+    'truth value is ambiguous' error.
+    """
+    if v is None:
+        return []
+    try:
+        return list(v)
+    except TypeError:
+        return []
 
 
 def _safe_float(v) -> float | None:
