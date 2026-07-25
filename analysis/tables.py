@@ -63,5 +63,13 @@ def build_comparison(records: list[RunRecord]) -> pd.DataFrame:
 def to_markdown(df: pd.DataFrame) -> str:
     if df.empty:
         return "_(no runs found)_\n"
-    # Pretty-print floats; let pandas pick a sane width.
-    return df.to_markdown(index=False, floatfmt=".3f")
+    # Replace NaN with empty string so cells like `nan` become blank in the
+    # rendered markdown. tabulate + floatfmt would otherwise print "nan".
+    pretty = df.copy()
+    for col in pretty.columns:
+        if pd.api.types.is_float_dtype(pretty[col]):
+            pretty[col] = pretty[col].map(
+                lambda v: "" if pd.isna(v) else f"{v:.3f}"
+            )
+    pretty = pretty.fillna("")
+    return pretty.to_markdown(index=False)
