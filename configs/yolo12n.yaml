@@ -1,0 +1,4 @@
+# Variant: YOLOv12 nano. Inherits base.yaml.
+# Requires an ultralytics version that supports YOLOv12 (see requirements.txt pin).
+train:
+  batch: 16

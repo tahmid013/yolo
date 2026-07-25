@@ -1,0 +1,6 @@
+# Variant: YOLOv12 large. Inherits base.yaml.
+# batch reduced to 8 for T4 memory (same reason as yolo12m.yaml).
+# May not fit a full 250 epochs in Colab free tier (12h) or Kaggle (9h) —
+# consider lowering `epochs: 150` here if the first attempt cuts off early.
+train:
+  batch: 8

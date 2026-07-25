@@ -1,0 +1,6 @@
+# Variant: YOLOv12 medium. Inherits base.yaml.
+# batch reduced to 8: v12 attention layers are more memory-hungry per parameter
+# than v11, so batch=16 at imgsz=832 may OOM on T4 (15 GB). Bump to 16 on
+# A100/L4/P100 if memory allows.
+train:
+  batch: 8
