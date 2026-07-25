@@ -32,6 +32,36 @@ def _find_latest_resumable(drive_runs_dir: Path, model: str) -> Path | None:
     return candidates[0]
 
 
+def _register_checkpoint_callback(
+    y, local_dir: Path, drive_run_dir: Path, every: int
+) -> None:
+    """Register a per-epoch callback that syncs to Drive every `every` epochs.
+
+    Ultralytics fires `on_fit_epoch_end` after each epoch's train + val loops.
+    We sync weights/last.pt, results.csv, args.yaml, run_meta.json — enough for
+    pipeline.train.run(resume=True) to continue after a disconnect. Errors are
+    caught and logged so a Drive hiccup never kills training.
+    """
+    if every <= 0:
+        return
+
+    def _cb(trainer):
+        epoch = int(getattr(trainer, "epoch", 0)) + 1  # 1-indexed for display
+        if epoch % every != 0:
+            return
+        try:
+            print(f"[checkpoint] epoch {epoch}: sync -> {drive_run_dir}")
+            persist_mod.sync_checkpoint(local_dir, drive_run_dir)
+        except Exception as e:
+            print(f"[checkpoint] WARN epoch {epoch}: {e}")
+
+    try:
+        y.add_callback("on_fit_epoch_end", _cb)
+    except Exception as e:
+        print(f"[checkpoint] WARN: could not register callback ({e}). "
+              "Training will run without periodic sync.")
+
+
 def _load_dataset_meta(data_yaml: Path) -> dict:
     """Read the dataset.meta.json next to data.yaml (one level up on Colab)."""
     # The unzipped layout puts data.yaml at /content/dataset/data.yaml.
@@ -51,6 +81,7 @@ def run(
     dataset_meta_path: str | Path | None = None,
     base_config: str | Path = "configs/base.yaml",
     resume: bool = False,
+    checkpoint_every: int = 10,
 ) -> Path:
     """Train one model variant.
 
@@ -92,6 +123,9 @@ def run(
         shutil.copytree(prev, local_dir)
         weights_path = local_dir / "weights" / "last.pt"
         y = YOLO(str(weights_path))
+        _register_checkpoint_callback(
+            y, local_dir, Path(drive_runs_dir) / resolved_run_name, checkpoint_every
+        )
         # Ultralytics' resume=True uses the weights' embedded training state and
         # writes back to the same project/name folder.
         started_at = dt.datetime.now(dt.timezone.utc)
@@ -114,6 +148,9 @@ def run(
             )
         print(f"[train] starting {model} -> {local_dir}")
         y = YOLO(f"{model}.pt")  # pretrained weights downloaded by Ultralytics
+        _register_checkpoint_callback(
+            y, local_dir, Path(drive_runs_dir) / resolved_run_name, checkpoint_every
+        )
         started_at = dt.datetime.now(dt.timezone.utc)
         t0 = time.perf_counter()
         try:

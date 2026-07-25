@@ -48,6 +48,38 @@ def copy_to_drive(local: str | Path, drive_parent: str | Path) -> Path:
     return final
 
 
+def sync_checkpoint(local_dir: str | Path, drive_dir: str | Path) -> None:
+    """Snapshot the resume-critical files from local_dir to drive_dir.
+
+    Called periodically DURING training so a disconnect doesn't lose all progress.
+    Unlike copy_to_drive (which does one atomic full-folder rename at end of
+    training), this does per-file atomic writes so it's cheap to call every N
+    epochs. On disconnect, drive_dir holds enough state for
+    pipeline.train.run(resume=True) to continue from the last synced epoch.
+    """
+    local_dir = Path(local_dir)
+    drive_dir = Path(drive_dir)
+    drive_dir.mkdir(parents=True, exist_ok=True)
+
+    for name in ("weights", "results.csv", "args.yaml", "run_meta.json"):
+        src = local_dir / name
+        if not src.exists():
+            continue
+        dst = drive_dir / name
+        if src.is_dir():
+            dst.mkdir(exist_ok=True)
+            for f in src.iterdir():
+                if not f.is_file():
+                    continue
+                tmp = dst / (f.name + ".tmp")
+                shutil.copy2(f, tmp)
+                os.replace(tmp, dst / f.name)  # atomic
+        else:
+            tmp = dst.with_name(dst.name + ".tmp")
+            shutil.copy2(src, tmp)
+            os.replace(tmp, dst)
+
+
 def cleanup_tmp(drive_parent: str | Path) -> int:
     """Remove leftover *.tmp / *.stale folders from previous failed copies."""
     drive_parent = Path(drive_parent)
