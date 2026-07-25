@@ -10,6 +10,10 @@ import yaml
 
 META_NAME = "run_meta.json"
 
+# Repo root = parent of the `pipeline/` package. Used to resolve short relative
+# paths like "configs/base.yaml" independently of the process CWD.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
 
 def hash_config(cfg: dict, length: int = 12) -> str:
     """Stable hash of a config dict (canonical JSON, sorted keys)."""
@@ -17,8 +21,17 @@ def hash_config(cfg: dict, length: int = 12) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:length]
 
 
+def resolve_repo_path(path: str | Path) -> Path:
+    """Resolve a relative path against REPO_ROOT; return absolute paths as-is."""
+    p = Path(path)
+    if p.is_absolute() or p.exists():
+        return p
+    return REPO_ROOT / p
+
+
 def load_yaml(path: str | Path) -> dict:
-    return yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    p = resolve_repo_path(path)
+    return yaml.safe_load(p.read_text(encoding="utf-8")) or {}
 
 
 def merge_configs(base: dict, override: dict) -> dict:
