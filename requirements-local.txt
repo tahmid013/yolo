@@ -5,3 +5,4 @@ pyyaml>=6.0
 pandas>=2.0
 matplotlib>=3.7
 numpy>=1.24
+tabulate>=0.9   # needed by pandas.DataFrame.to_markdown() in analysis/tables.py

@@ -53,5 +53,10 @@ def load_runs(runs_dir: str | Path) -> list[RunRecord]:
             results=results_df, per_class=per_class,
         ))
 
-    records.sort(key=lambda r: r.meta.get("train", {}).get("ended_at", r.name))
+    def _sort_key(r: RunRecord) -> str:
+        # ended_at may be None (imported reference runs); fall back to the run
+        # name so all keys are comparable strings.
+        ended = (r.meta.get("train") or {}).get("ended_at")
+        return ended if isinstance(ended, str) else r.name
+    records.sort(key=_sort_key)
     return records
