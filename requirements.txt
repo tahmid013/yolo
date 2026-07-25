@@ -1,11 +1,11 @@
 # Colab-side requirements. Torch + CUDA are provided by the Colab runtime;
 # do NOT pin torch here (it overrides Colab's CUDA-matched build).
 #
-# Pin `ultralytics` to a version that supports BOTH YOLOv11 and YOLOv12.
-# To set the pin: in a scratch Colab cell run
-#   !pip install -U ultralytics && python -c "import ultralytics; print(ultralytics.__version__)"
-# then replace the version below with the value printed.
-ultralytics==8.3.40
+# ultralytics: YOLOv12 support was added later in the 8.3.x line (the earlier
+# 8.3.40 pin worked for v11 only). Using a floor here so Colab installs the
+# latest v12-capable release. The exact version used per run is captured in
+# each run_meta.json's env.ultralytics field for reproducibility.
+ultralytics>=8.3.100
 
 pyyaml>=6.0
 pandas>=2.0
