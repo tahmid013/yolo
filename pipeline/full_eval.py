@@ -78,8 +78,11 @@ def run(
     """Run YOLO.val on ALL 1,026 images and save results."""
     from ultralytics import YOLO
 
-    run_dir = Path(run_dir)
-    source_dataset_dir = Path(source_dataset_dir)
+    # Resolve to absolute so ultralytics doesn't re-anchor it under its own
+    # runs_dir (which produces `runs/detect/<project>/<name>/` and breaks the
+    # write below that expects `<run_dir>/full_eval/`).
+    run_dir = Path(run_dir).resolve()
+    source_dataset_dir = Path(source_dataset_dir).resolve()
 
     weights = run_dir / "weights" / "best.pt"
     if not weights.exists():
@@ -104,7 +107,9 @@ def run(
 
         names = _class_names(data_yaml)
         payload = _build_payload(metrics, names)
-        (run_dir / "full_eval" / "per_class.json").write_text(
+        eval_dir = run_dir / "full_eval"
+        eval_dir.mkdir(parents=True, exist_ok=True)
+        (eval_dir / "per_class.json").write_text(
             json.dumps(payload, indent=2), encoding="utf-8"
         )
         meta_mod.update_run_meta(run_dir, {"full_eval": payload})

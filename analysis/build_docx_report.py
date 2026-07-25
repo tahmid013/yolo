@@ -285,19 +285,27 @@ def build_docx(v11: dict, v12: dict, out_docx: Path) -> Path:
         "triggered when the validation mAP stopped improving."
     )
 
-    _all_train = [
-        ("Table 1.1", "Training progress of YOLOv11-n", v11.get("yolo11n")),
-        ("Table 1.2", "Training progress of YOLOv11-s", v11.get("yolo11s")),
-        ("Table 1.3", "Training progress of YOLOv11-m", v11.get("yolo11m")),
-        ("Table 1.4", "Training progress of YOLOv11-l", v11.get("yolo11l")),
-        ("Table 1.5", "Training progress of YOLOv12-n", v12.get("yolo12n")),
-        ("Table 1.6", "Training progress of YOLOv12-s", v12.get("yolo12s")),
-        ("Table 1.7", "Training progress of YOLOv12-m", v12.get("yolo12m")),
-        ("Table 1.8", "Training progress of YOLOv12-l", v12.get("yolo12l")),
+    # v11 always present (from reference docx)
+    _v11_train = [
+        ("YOLOv11-n", v11.get("yolo11n")),
+        ("YOLOv11-s", v11.get("yolo11s")),
+        ("YOLOv11-m", v11.get("yolo11m")),
+        ("YOLOv11-l", v11.get("yolo11l")),
     ]
-    for tag, title, d in _all_train:
+    # v12 only include variants that were actually trained (have training rows)
+    _v12_train = [
+        (label, v12.get(v)) for v, label in zip(V12_VARIANTS, V12_LABELS)
+        if v12.get(v) and v12[v].get("training")
+    ]
+    all_train = _v11_train + _v12_train
+    for idx, (label, d) in enumerate(all_train, start=1):
+        # Table 1.1..1.4 for v11, 1.5+ for v12
+        section = 1 if idx <= 4 else 1
+        num = idx if idx <= 4 else 4 + (idx - 4)  # continues 1.5, 1.6, ...
+        tag = f"Table 1.{num}"
+        title = f"Training progress of {label}"
         if not d or not d.get("training"):
-            doc.add_paragraph(f"{tag}: {title} — NOT YET AVAILABLE")
+            doc.add_paragraph(f"{tag}: {title} — NOT AVAILABLE")
             continue
         rows = _training_table_rows(d["training"])
         n_epochs = len(rows)
@@ -315,19 +323,24 @@ def build_docx(v11: dict, v12: dict, out_docx: Path) -> Path:
         "models — same dataset)."
     )
 
-    _all_pc = [
-        ("Table 2.1", "mAP value for all classes (YOLOv11-n)", v11.get("yolo11n")),
-        ("Table 2.2", "mAP value for all classes (YOLOv11-s)", v11.get("yolo11s")),
-        ("Table 2.3", "mAP value for all classes (YOLOv11-m)", v11.get("yolo11m")),
-        ("Table 2.4", "mAP value for all classes (YOLOv11-l)", v11.get("yolo11l")),
-        ("Table 2.5", "mAP value for all classes (YOLOv12-n)", v12.get("yolo12n")),
-        ("Table 2.6", "mAP value for all classes (YOLOv12-s)", v12.get("yolo12s")),
-        ("Table 2.7", "mAP value for all classes (YOLOv12-m)", v12.get("yolo12m")),
-        ("Table 2.8", "mAP value for all classes (YOLOv12-l)", v12.get("yolo12l")),
+    _v11_pc = [
+        ("YOLOv11-n", v11.get("yolo11n")),
+        ("YOLOv11-s", v11.get("yolo11s")),
+        ("YOLOv11-m", v11.get("yolo11m")),
+        ("YOLOv11-l", v11.get("yolo11l")),
     ]
-    for tag, title, d in _all_pc:
+    # Only include v12 variants that have full-set eval (overall metrics populated)
+    _v12_pc = [
+        (label, v12.get(v)) for v, label in zip(V12_VARIANTS, V12_LABELS)
+        if v12.get(v) and v12[v].get("overall") is not None
+    ]
+    all_pc = _v11_pc + _v12_pc
+    for idx, (label, d) in enumerate(all_pc, start=1):
+        num = idx  # 2.1, 2.2, ..., continues naturally
+        tag = f"Table 2.{num}"
+        title = f"mAP value for all classes ({label})"
         if not d or not d.get("per_class") or (d.get("overall") is None and not d.get("per_class")):
-            doc.add_paragraph(f"{tag}: {title} — NOT YET AVAILABLE (run full-set eval)")
+            doc.add_paragraph(f"{tag}: {title} — NOT AVAILABLE (run full-set eval)")
             continue
         rows = _per_class_table_rows(d.get("overall"), d["per_class"], label_lookup)
         _add_table(
@@ -349,9 +362,11 @@ def build_docx(v11: dict, v12: dict, out_docx: Path) -> Path:
         "mAP@0.5 is the standard PASCAL-VOC metric on the full evaluation set."
     )
     rows = []
-    all_data = list(zip(V11_LABELS, [v11.get(v) for v in V11_VARIANTS])) + \
-               list(zip(V12_LABELS, [v12.get(v) for v in V12_VARIANTS]))
-    for label, d in all_data:
+    # v11 always present; v12 only variants that were fully evaluated
+    v11_data = list(zip(V11_LABELS, [v11.get(v) for v in V11_VARIANTS]))
+    v12_data = [(label, v12.get(v)) for v, label in zip(V12_VARIANTS, V12_LABELS)
+                if v12.get(v) and v12[v].get("overall") is not None]
+    for label, d in v11_data + v12_data:
         if d is None or d.get("overall") is None:
             rows.append([label, "—", "—", "—", "—"])
             continue
@@ -373,8 +388,11 @@ def build_docx(v11: dict, v12: dict, out_docx: Path) -> Path:
         "Blank cells indicate the corresponding v12 model has not yet been "
         "fully evaluated."
     )
-    all_labels = list(V11_LABELS) + list(V12_LABELS)
-    all_records = [v11.get(v) for v in V11_VARIANTS] + [v12.get(v) for v in V12_VARIANTS]
+    # v11 always; v12 only variants fully evaluated
+    _v12_present = [(v, label) for v, label in zip(V12_VARIANTS, V12_LABELS)
+                    if v12.get(v) and v12[v].get("overall") is not None]
+    all_labels = list(V11_LABELS) + [lbl for _, lbl in _v12_present]
+    all_records = [v11.get(v) for v in V11_VARIANTS] + [v12.get(v) for v, _ in _v12_present]
     headers = ["Class"] + all_labels
     rows_out = []
     for cname in CLASS_ORDER:
@@ -416,9 +434,12 @@ def build_docx(v11: dict, v12: dict, out_docx: Path) -> Path:
         src = v11.get(v, {}).get("source", "MISSING")
         doc.add_paragraph(f"  • {v}: {src} (verbatim copy)", style="List Bullet")
     for v in V12_VARIANTS:
-        src = v12.get(v, {}).get("source", "NOT YET TRAINED / EVALUATED")
-        n_train = len(v12.get(v, {}).get("training", [])) if v12.get(v) else 0
-        has_full = v12.get(v, {}).get("overall") is not None if v12.get(v) else False
+        d = v12.get(v)
+        if not d:
+            continue  # skip variants not trained (v12n-only mode)
+        src = d.get("source", "MISSING")
+        n_train = len(d.get("training", []))
+        has_full = d.get("overall") is not None
         doc.add_paragraph(
             f"  • {v}: {src}  (training rows: {n_train}, full-set eval: {'yes' if has_full else 'NO'})",
             style="List Bullet",
