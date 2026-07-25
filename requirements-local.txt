@@ -6,3 +6,4 @@ pandas>=2.0
 matplotlib>=3.7
 numpy>=1.24
 tabulate>=0.9   # needed by pandas.DataFrame.to_markdown() in analysis/tables.py
+python-docx>=1.1  # needed by analysis/build_docx_report.py
