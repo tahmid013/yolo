@@ -484,6 +484,8 @@ def main() -> int:
                     default=Path("report_generation/training progress table.docx"))
     ap.add_argument("--runs-dir", type=Path, default=Path("runs"))
     ap.add_argument("--out", type=Path, default=Path("analysis/reports"))
+    ap.add_argument("--out-name", type=str, default="v11_v12_thesis_tables.docx",
+                    help="Filename for the generated docx (default: v11_v12_thesis_tables.docx)")
     args = ap.parse_args()
 
     if not args.v11_docx.exists():
@@ -513,7 +515,7 @@ def main() -> int:
             print(f"       {v}: not trained yet")
 
     ts = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S")
-    out_docx = args.out / ts / "v11_v12_thesis_tables.docx"
+    out_docx = args.out / ts / args.out_name
     build_docx(v11, v12, out_docx)
     print(f"[docx] wrote {out_docx}")
     return 0
