@@ -6,6 +6,7 @@ report_generation/
 data_prep/build/
 runs/
 analysis/reports/
+analysis/*.docx
 
 # Python
 __pycache__/
