@@ -1,0 +1,21 @@
+{
+  "split": "full",
+  "overall": {
+    "mAP50": 0.803,
+    "mAP50_95": 0.386,
+    "precision": 0.776,
+    "recall": 0.773
+  },
+  "per_class": [
+    {"id": 0, "name": "Earmuffs or Ear plugs", "ap50": 0.781, "ap50_95": 0.323, "precision": 0.769, "recall": 0.732},
+    {"id": 1, "name": "Face shield",            "ap50": 0.536, "ap50_95": 0.279, "precision": 0.413, "recall": 0.645},
+    {"id": 2, "name": "Footwear",               "ap50": 0.703, "ap50_95": 0.271, "precision": 0.617, "recall": 0.724},
+    {"id": 3, "name": "Goggles",                "ap50": 0.779, "ap50_95": 0.315, "precision": 0.806, "recall": 0.688},
+    {"id": 4, "name": "Hand gloves",            "ap50": 0.817, "ap50_95": 0.356, "precision": 0.826, "recall": 0.737},
+    {"id": 5, "name": "Helmet",                 "ap50": 0.935, "ap50_95": 0.433, "precision": 0.925, "recall": 0.908},
+    {"id": 6, "name": "Masks",                  "ap50": 0.854, "ap50_95": 0.352, "precision": 0.892, "recall": 0.813},
+    {"id": 7, "name": "Safety apron or vest",   "ap50": 0.884, "ap50_95": 0.549, "precision": 0.827, "recall": 0.806},
+    {"id": 8, "name": "Safety jacket",          "ap50": 0.938, "ap50_95": 0.594, "precision": 0.906, "recall": 0.900}
+  ],
+  "source_note": "Full-set re-eval on all 1,026 images (5,547 instances). Matches methodology of report_generation/training progress table.docx. Ultralytics 8.4.105, torch 2.13.0+cpu, Intel Core i5-10210U. Wall time ~7 min."
+}

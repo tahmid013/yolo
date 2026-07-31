@@ -1,0 +1,42 @@
+{
+  "run_name": "yolo11m_reference",
+  "model": "yolo11m",
+  "config_path": "report_generation reference (unknown pipeline config)",
+  "config_hash": null,
+  "dataset": {
+    "version": "reference",
+    "sha256": null,
+    "counts": null
+  },
+  "env": {
+    "note": "Reference team training; env not captured. Val metrics are on the reference team's split, not our v1 80/10/10 test split."
+  },
+  "train": {
+    "started_at": null,
+    "ended_at": null,
+    "wall_time_sec": 8297,
+    "epochs_requested": null,
+    "epochs_completed": 143,
+    "early_stopped": null,
+    "peak_gpu_mem_mb": null,
+    "final_metrics_val": {
+      "metrics/mAP50(B)": 0.75005,
+      "metrics/mAP50-95(B)": 0.33201,
+      "metrics/precision(B)": 0.73114,
+      "metrics/recall(B)": 0.76383,
+      "train/box_loss": 1.2628,
+      "val/box_loss": 2.09499
+    },
+    "resumed": false
+  },
+  "test": null,
+  "weights": {
+    "best_mb": 40.57,
+    "last_mb": 40.57,
+    "params_m": null
+  },
+  "reference_import": {
+    "imported_at": "2026-07-25T16:31:55.950049+00:00",
+    "note": "Imported from report_generation/. Test metrics blank \u2014 re-run pipeline.evaluate.run() against v1 test split for apples-to-apples."
+  }
+}

@@ -4,9 +4,17 @@ report_generation/
 
 # Build artifacts
 data_prep/build/
-runs/
 analysis/reports/
 analysis/*.docx
+
+# runs/ is committed as a reference of trained models' outputs, but only the
+# small human-readable artifacts (metrics CSVs, JSON, YAML configs, plot PNGs,
+# confusion matrices). Weights (.pt, ~350 MB total) and Ultralytics' large
+# batch-preview JPGs are excluded — weights go to GitHub Releases instead.
+runs/**/weights/
+runs/**/train_batch*.jpg
+runs/**/val_batch*.jpg
+runs/**/*.pt
 
 # Python
 __pycache__/

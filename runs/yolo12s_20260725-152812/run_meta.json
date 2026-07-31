@@ -1,0 +1,258 @@
+{
+  "run_name": "yolo12s_20260725-152812",
+  "model": "yolo12s",
+  "config_path": "configs/yolo12s.yaml",
+  "config_hash": "dd8fd9241ddc",
+  "config_resolved": {
+    "train": {
+      "epochs": 250,
+      "patience": 100,
+      "batch": 16,
+      "imgsz": 832,
+      "optimizer": "auto",
+      "lr0": 0.01,
+      "lrf": 0.01,
+      "momentum": 0.937,
+      "weight_decay": 0.0005,
+      "warmup_epochs": 3.0,
+      "warmup_momentum": 0.8,
+      "warmup_bias_lr": 0.1,
+      "box": 7.5,
+      "cls": 0.5,
+      "dfl": 1.5,
+      "hsv_h": 0.015,
+      "hsv_s": 0.7,
+      "hsv_v": 0.4,
+      "degrees": 0.0,
+      "translate": 0.1,
+      "scale": 0.5,
+      "shear": 0.0,
+      "perspective": 0.0,
+      "flipud": 0.0,
+      "fliplr": 0.5,
+      "mosaic": 1.0,
+      "mixup": 0.0,
+      "copy_paste": 0.0,
+      "auto_augment": "randaugment",
+      "erasing": 0.4,
+      "close_mosaic": 10,
+      "seed": 0,
+      "deterministic": true,
+      "cos_lr": false,
+      "amp": true,
+      "val": true,
+      "plots": true,
+      "save": true,
+      "save_period": -1,
+      "cache": false
+    }
+  },
+  "dataset": {
+    "version": "v1",
+    "sha256": "919468a2de36a4fc0cee28de915993a29a7e434ff1461590d6d2dc2eafdc54fd",
+    "counts": {
+      "train": 820,
+      "val": 102,
+      "test": 104
+    }
+  },
+  "env": {
+    "python": "3.12.13",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91900,
+    "gpu_name": "Tesla T4",
+    "gpu_mem_gb": 15.64,
+    "ultralytics": "8.4.105",
+    "git_commit": "7bc32db52631546a3c0b97a70c10206761593e78"
+  },
+  "train": {
+    "started_at": "2026-07-25T15:28:12.920873+00:00",
+    "ended_at": "2026-07-25T17:32:25.691978+00:00",
+    "wall_time_sec": 7452.8,
+    "epochs_requested": 250,
+    "epochs_completed": 158,
+    "early_stopped": true,
+    "peak_gpu_mem_mb": 11658.9,
+    "final_metrics_val": {
+      "metrics/precision(B)": 0.6554853040630493,
+      "metrics/recall(B)": 0.7136494593280069,
+      "metrics/mAP50(B)": 0.6719102645185399,
+      "metrics/mAP50-95(B)": 0.2892667840216075,
+      "fitness": 0.2892667840216075
+    },
+    "resumed": false
+  },
+  "test": {
+    "split": "test",
+    "overall": {
+      "mAP50": 0.740572587720902,
+      "mAP50_95": 0.3308733896811514,
+      "precision": 0.7596829833415053,
+      "recall": 0.7797818744491813
+    },
+    "per_class": [
+      {
+        "id": 0,
+        "name": "Earmuffs or Ear plugs",
+        "ap50": 0.35677221900906114,
+        "ap50_95": 0.10441558517936009,
+        "precision": 0.4984842370043545,
+        "recall": 0.42105263157894735
+      },
+      {
+        "id": 1,
+        "name": "Face shield",
+        "ap50": 0.995,
+        "ap50_95": 0.5493571428571429,
+        "precision": 0.8628528586852803,
+        "recall": 1.0
+      },
+      {
+        "id": 2,
+        "name": "Footwear",
+        "ap50": 0.7808333333333336,
+        "ap50_95": 0.2825489389695273,
+        "precision": 0.7562340248054409,
+        "recall": 0.9444444444444444
+      },
+      {
+        "id": 3,
+        "name": "Goggles",
+        "ap50": 0.6774618864872262,
+        "ap50_95": 0.28056086423498616,
+        "precision": 0.8484427380572429,
+        "recall": 0.5955554527168018
+      },
+      {
+        "id": 4,
+        "name": "Hand gloves",
+        "ap50": 0.6199060878169635,
+        "ap50_95": 0.2256088052649478,
+        "precision": 0.6802947286670429,
+        "recall": 0.7487751846796609
+      },
+      {
+        "id": 5,
+        "name": "Helmet",
+        "ap50": 0.9020833664742651,
+        "ap50_95": 0.33445379846045864,
+        "precision": 0.9030737104057348,
+        "recall": 0.8702702702702703
+      },
+      {
+        "id": 6,
+        "name": "Masks",
+        "ap50": 0.6186874076216182,
+        "ap50_95": 0.2169510732207459,
+        "precision": 0.5251511621342584,
+        "recall": 0.7272727272727273
+      },
+      {
+        "id": 7,
+        "name": "Safety apron or vest",
+        "ap50": 0.7943956307349102,
+        "ap50_95": 0.44993615338822235,
+        "precision": 0.8700206329976918,
+        "recall": 0.8032587516723728
+      },
+      {
+        "id": 8,
+        "name": "Safety jacket",
+        "ap50": 0.9200133580107389,
+        "ap50_95": 0.534028145554971,
+        "precision": 0.8925927573165006,
+        "recall": 0.9074074074074074
+      }
+    ]
+  },
+  "weights": {
+    "best_mb": 18.99,
+    "last_mb": 18.99,
+    "params_m": 9.257
+  },
+  "full_eval": {
+    "split": "full",
+    "overall": {
+      "mAP50": 0.8566198155171617,
+      "mAP50_95": 0.44061751494298523,
+      "precision": 0.8218883271755791,
+      "recall": 0.8332858393771924
+    },
+    "per_class": [
+      {
+        "id": 0,
+        "name": "Earmuffs or Ear plugs",
+        "ap50": 0.7440089194006105,
+        "ap50_95": 0.3110508511239546,
+        "precision": 0.7207317414758153,
+        "recall": 0.7448979591836735
+      },
+      {
+        "id": 1,
+        "name": "Face shield",
+        "ap50": 0.8106236705194825,
+        "ap50_95": 0.459935791459955,
+        "precision": 0.8429788068485998,
+        "recall": 0.6774193548387096
+      },
+      {
+        "id": 2,
+        "name": "Footwear",
+        "ap50": 0.8236683299408646,
+        "ap50_95": 0.36618538978357396,
+        "precision": 0.7184214631833956,
+        "recall": 0.8382352941176471
+      },
+      {
+        "id": 3,
+        "name": "Goggles",
+        "ap50": 0.8254743242614366,
+        "ap50_95": 0.36605651702583575,
+        "precision": 0.834932713912057,
+        "recall": 0.7541961752899565
+      },
+      {
+        "id": 4,
+        "name": "Hand gloves",
+        "ap50": 0.8263419634881373,
+        "ap50_95": 0.3792123282381187,
+        "precision": 0.7741586973261692,
+        "recall": 0.8494271685761048
+      },
+      {
+        "id": 5,
+        "name": "Helmet",
+        "ap50": 0.9464213488473032,
+        "ap50_95": 0.45407268730460615,
+        "precision": 0.9264103125518002,
+        "recall": 0.9335511982570807
+      },
+      {
+        "id": 6,
+        "name": "Masks",
+        "ap50": 0.896365512556754,
+        "ap50_95": 0.4254779405717259,
+        "precision": 0.8305221708334424,
+        "recall": 0.9045936395759717
+      },
+      {
+        "id": 7,
+        "name": "Safety apron or vest",
+        "ap50": 0.8919753879585147,
+        "ap50_95": 0.5886990433177528,
+        "precision": 0.8527462169029089,
+        "recall": 0.86697965571205
+      },
+      {
+        "id": 8,
+        "name": "Safety jacket",
+        "ap50": 0.9446988826813519,
+        "ap50_95": 0.6148670856613435,
+        "precision": 0.8960928215460234,
+        "recall": 0.9302721088435374
+      }
+    ]
+  }
+}
