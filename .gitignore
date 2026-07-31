@@ -16,6 +16,9 @@ runs/**/train_batch*.jpg
 runs/**/val_batch*.jpg
 runs/**/*.pt
 
+# Zip staging area for GitHub Release uploads (drag-drop then delete)
+release/
+
 # Python
 __pycache__/
 *.py[cod]
