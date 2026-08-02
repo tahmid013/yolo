@@ -19,6 +19,9 @@ runs/**/*.pt
 # Zip staging area for GitHub Release uploads (drag-drop then delete)
 release/
 
+# Demo prediction outputs (regenerable via analysis/predict_demo.py)
+demo/
+
 # Python
 __pycache__/
 *.py[cod]
